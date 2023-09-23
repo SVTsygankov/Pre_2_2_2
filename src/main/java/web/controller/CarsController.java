@@ -4,22 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import web.dao.CarDAO;
 import web.models.Car;
+import web.service.CarService;
 
 @Controller
 @RequestMapping("/cars")
 public class CarsController {
 
-    private final CarDAO carDAO;
+    private final CarService carService;
     @Autowired
-    public CarsController(CarDAO carDAO) {
-        this.carDAO = carDAO;
-    }
+    public CarsController(CarService carService) { this.carService = carService;}
 
     @GetMapping()
-    public String showAll(@RequestParam(value = "n", required =false) Integer n, Model model) {
-        model.addAttribute("cars", carDAO.getNCars(n));
+    public String showAll(@RequestParam(value = "count", required =false) Integer count, Model model) {
+        model.addAttribute("cars", carService.getCountCars(count));
         return "cars/showAll";
     }
 
@@ -31,7 +29,7 @@ public class CarsController {
 
     @PostMapping()
     public String create(@ModelAttribute("car") Car car) {
-        carDAO.save(car);
+        carService.save(car);
         return  "redirect:/cars";
     }
 }
